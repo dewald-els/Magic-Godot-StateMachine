@@ -1,0 +1,91 @@
+[gd_scene load_steps=13 format=3 uid="uid://ldq0hv2fbc84"]
+
+[ext_resource type="Texture2D" uid="uid://cw5xaro3r3td0" path="res://assets/sprites/characters_packed.png" id="1_k0ffd"]
+[ext_resource type="Script" path="res://scenes/player/player.gd" id="1_sf8ya"]
+[ext_resource type="Script" path="res://state_machine/state_machine.gd" id="1_t2tkp"]
+[ext_resource type="Script" path="res://scenes/player/states/idle.gd" id="4_se3rl"]
+[ext_resource type="Script" path="res://scenes/player/states/jump.gd" id="5_gl2ll"]
+[ext_resource type="Script" path="res://scenes/player/states/run.gd" id="5_rwcqw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epo34"]
+atlas = ExtResource("1_k0ffd")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2oghr"]
+atlas = ExtResource("1_k0ffd")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxd8w"]
+atlas = ExtResource("1_k0ffd")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cqa4g"]
+atlas = ExtResource("1_k0ffd")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vy1gy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_epo34")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2oghr")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jxd8w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cqa4g")
+}],
+"loop": true,
+"name": &"run",
+"speed": 7.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oskue"]
+size = Vector2(12, 18)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_sf8ya")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -12)
+sprite_frames = SubResource("SpriteFrames_vy1gy")
+animation = &"jump"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
+shape = SubResource("RectangleShape2D_oskue")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("1_t2tkp")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("4_se3rl")
+
+[node name="Run" type="Node" parent="StateMachine"]
+script = ExtResource("5_rwcqw")
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource("5_gl2ll")
+
+[node name="LabelState" type="Label" parent="."]
+offset_left = -10.0
+offset_top = -36.0
+offset_right = 30.0
+offset_bottom = -13.0
+theme_override_font_sizes/font_size = 8
+text = "State"
